@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: auditafin_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: auditafin
+      POSTGRES_USER: admin_audit
+      POSTGRES_PASSWORD: super_secret_password_123
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    container_name: auditafin_api
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=auditafin
+      - DB_USER=admin_audit
+      - DB_PASSWORD=super_secret_password_123
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+    driver: local

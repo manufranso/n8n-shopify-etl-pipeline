@@ -1,0 +1,7 @@
+id_departamento,nombre_dept,presupuesto_anual
+DEP_IT,Tecnología de la Información,750000.0
+DEP_HR,Recursos Humanos,200000.0
+DEP_MKT,Marketing y Ventas,450000.0
+DEP_OPS,Operaciones y Logística,1200000.0
+DEP_LEG,Legal y Cumplimiento,150000.0
+DEP_FIN,Finanzas y Administración,100000.0
