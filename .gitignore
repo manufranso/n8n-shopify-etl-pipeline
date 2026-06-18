@@ -1,58 +1,37 @@
-# Entornos virtuales de Python
+# Entornos y Configuración Local
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
 .venv/
 venv/
 ENV/
 env/
-bin/
-lib/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# Cache y archivos compilados
-**/__pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-
-# Configuración local y variables de entorno (Credenciales, API keys)
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-*.pem
-*.key
-
-# Archivos de base de datos local y almacenamiento temporal
-docker/data/
+# Datos y Bases de Datos
+postgres_data/
 *.db
 *.sqlite
+*.csv
+*.xlsx
+*.json
+!OH_YEAH_WORKFLOW.json   # Permitir subir el workflow de n8n para que puedan importarlo
+!package.json
 
-# IDEs y Editores de texto (Antigravity IDE & Gemini)
-.gemini/
-.antigravity/
+# IDEs y Editores
+.vscode/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.swp
-*.swo
 
-# Historial del sistema
-.DS_Store
-Thumbs.db
+# Docker logs
+*.log
+docker-compose.override.yml

@@ -11,22 +11,24 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements.txt e instalar dependencias
-COPY ingestion/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar el código fuente necesario del proyecto al contenedor
-COPY ingestion/ ./ingestion/
-COPY lambda/ ./lambda/
+COPY config/ ./config/
+COPY database/ ./database/
+COPY scraping/ ./scraping/
 
 # Configurar variables de entorno por defecto para apuntar al PostgreSQL interno del Docker Compose
 ENV DB_HOST=postgres
 ENV DB_PORT=5432
-ENV DB_NAME=auditafin
-ENV DB_USER=admin_audit
-ENV DB_PASSWORD=super_secret_password_123
+ENV DB_NAME=OH_YEAH_DB
+ENV DB_USER=OH_YEAH_USER
+ENV DB_PASSWORD=OH_YEAH_PASSWORD
+ENV PYTHONPATH=/app
 
 # Exponer el puerto de la API de Flask
 EXPOSE 5000
 
-# Comando para ejecutar la API
-CMD ["python", "ingestion/app_api.py"]
+# Comando para ejecutar (levanta la API Flask)
+CMD ["python", "scraping/app.py"]

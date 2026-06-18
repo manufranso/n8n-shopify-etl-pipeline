@@ -1,12 +1,12 @@
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: auditafin_postgres
+    container_name: catalog_intelligence_postgres
     restart: always
     environment:
-      POSTGRES_DB: auditafin
-      POSTGRES_USER: admin_audit
-      POSTGRES_PASSWORD: super_secret_password_123
+      POSTGRES_DB: OH_YEAH_DB
+      POSTGRES_USER: OH_YEAH_USER
+      POSTGRES_PASSWORD: OH_YEAH_PASSWORD
     ports:
       - "5434:5432"
     volumes:
@@ -15,18 +15,18 @@ services:
 
   api:
     build:
-      context: ../
-      dockerfile: docker/Dockerfile
-    container_name: auditafin_api
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: catalog_intelligence_api
     restart: always
     ports:
       - "5000:5000"
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=auditafin
-      - DB_USER=admin_audit
-      - DB_PASSWORD=super_secret_password_123
+      - DB_NAME=OH_YEAH_DB
+      - DB_USER=OH_YEAH_USER
+      - DB_PASSWORD=OH_YEAH_PASSWORD
     depends_on:
       - postgres
 
