@@ -20,7 +20,7 @@ postgres_data/
 *.csv
 *.xlsx
 *.json
-!OH_YEAH_WORKFLOW.json   # Permitir subir el workflow de n8n para que puedan importarlo
+!n8n/OH_YEAH_WORKFLOW.json   # Permitir subir el workflow de n8n dentro de su carpeta
 !package.json
 
 # IDEs y Editores

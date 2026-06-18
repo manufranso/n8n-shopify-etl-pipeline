@@ -49,7 +49,7 @@ docker-compose up --build -d
 
 ### 2. Configurar el Orquestador n8n
 1. Abre tu instancia local de n8n (ej: `http://localhost:5678`).
-2. Haz clic en **Import from File** y selecciona el archivo `OH_YEAH_WORKFLOW.json` que se encuentra en la raíz de este proyecto.
+2. Haz clic en **Import from File** y selecciona el archivo `OH_YEAH_WORKFLOW.json` que se encuentra en la carpeta **`n8n/`** de este proyecto.
 3. Configura tus credenciales en los nodos correspondientes:
    * **Google Gemini API**: Tu API key de Google AI Studio.
    * **Postgres**: Conexión al Host `catalog_intelligence_postgres` por el puerto `5432` con usuario `OH_YEAH_USER` y contraseña `OH_YEAH_PASSWORD`.
