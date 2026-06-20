@@ -41,6 +41,27 @@ def trigger_scraping():
             "message": f"Error interno en el servidor: {str(e)}"
         }), 500
 
+@app.route("/trigger-cleaning", methods=["GET", "POST"])
+def trigger_cleaning():
+    """
+    Endpoint HTTP que activa la limpieza y validación de datos
+    retroactiva sobre la tabla de productos de PostgreSQL.
+    """
+    try:
+        print("[API] Recibida petición para iniciar limpieza de datos...")
+        from database.clean_data import clean_data_pipeline
+        clean_data_pipeline()
+        return jsonify({
+            "status": "success",
+            "message": "Limpieza y validación de catálogo completadas con éxito."
+        }), 200
+    except Exception as e:
+        print(f"[API ERROR] Error en la ejecución de la limpieza: {e}")
+        return jsonify({
+            "status": "error",
+            "message": f"Error interno durante la limpieza: {str(e)}"
+        }), 500
+
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "healthy"}), 200

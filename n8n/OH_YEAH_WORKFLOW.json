@@ -1,0 +1,484 @@
+{
+  "name": "OH_YEAH_WORKFLOW",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -704,
+        192
+      ],
+      "id": "dce8724f-f535-4396-b2ae-3167ddd6296a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/trigger-scraping",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -480,
+        192
+      ],
+      "id": "7686b2ca-3958-4644-b8f6-f85085d8d764",
+      "name": "Web Scrapping y guardar datos en DB"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT p.id, p.external_id, p.title, p.description\nFROM productos p\nLEFT JOIN insights_ia i ON p.external_id = i.external_id\nWHERE i.external_id IS NULL;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -32,
+        192
+      ],
+      "id": "161246ff-dace-4122-b659-45063bd2f9c2",
+      "name": "Query SQL Nuevos productos",
+      "credentials": {
+        "postgres": {
+          "id": "o29cqACDv2s7f8sE",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "insights_ia",
+          "mode": "list",
+          "cachedResultName": "insights_ia"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "external_id": "={{ $json.external_id }}",
+            "tematica": "={{ $json.tematica }}",
+            "rango_edad": "={{ $json.rango_edad }}",
+            "seo_title_opt": "={{ $json.seo_title_opt }}",
+            "tipo_producto": "={{ $json.tipo_producto }}"
+          },
+          "matchingColumns": [
+            "external_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "producto_id",
+              "displayName": "producto_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "external_id",
+              "displayName": "external_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tematica",
+              "displayName": "tematica",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "rango_edad",
+              "displayName": "rango_edad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "seo_title_opt",
+              "displayName": "seo_title_opt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "analizado_at",
+              "displayName": "analizado_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "tipo_producto",
+              "displayName": "tipo_producto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1216,
+        192
+      ],
+      "id": "97081b5e-d3c2-4f44-87f9-acca05fe2c75",
+      "name": "Actualizar o Insertar nuevos productos",
+      "credentials": {
+        "postgres": {
+          "id": "o29cqACDv2s7f8sE",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 20,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        192,
+        192
+      ],
+      "id": "ed0dd809-a676-478c-9591-ea550d0aedaa",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "576a4a13-25f4-42fe-a979-8bbec83e3d8b",
+      "placeholder": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        -224
+      ],
+      "id": "b15d6817-30de-462e-9118-646a76b0fd0e",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "manuelfrancessoler@gmail.com",
+        "toEmail": "manuelfrancessoler@gmail.com",
+        "subject": "⚠️ Fallo en el Pipeline: Oh Yeah Party",
+        "html": "=<h3>Detalles del Error en el Flujo</h3>\n<p>El pipeline automático de categorización e-commerce ha fallado.</p>\n<ul>\n  <li><b>Nodo fallido:</b> {{ $json.execution.error.node.name }}</li>\n  <li><b>Mensaje de error:</b> <span style=\"color: red;\">{{ $json.execution.error.message }}</span></li>\n  <li><b>Fecha y Hora:</b> {{ new Date().toLocaleString() }}</li>\n</ul>\n<p>Por favor, revisa el panel de n8n para obtener más detalles del log de ejecución.</p>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -480,
+        -224
+      ],
+      "id": "b0027a55-1c93-4116-99ea-4531c5a55593",
+      "name": "Send an Email",
+      "webhookId": "b3d31501-9f32-4d06-aa37-20e684d296a3",
+      "credentials": {
+        "smtp": {
+          "id": "4eyQaeazrRA82UHj",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:5000/trigger-cleaning",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -256,
+        192
+      ],
+      "id": "bde58063-9682-4a4c-8184-d4b3acda72ef",
+      "name": "Limpieza de datos Catálogo"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Recupera la respuesta de texto de Gemini\nlet responseText = $json.content.parts[0].text;\n\n// 2. Limpia los bloques de código markdown habituales\nresponseText = responseText.replace(/```json/g, \"\").replace(/```/g, \"\").trim();\n\n// 3. Extrae la estructura de array JSON en caso de que Gemini haya añadido texto explicativo fuera del JSON\nconst jsonStart = responseText.indexOf('[');\nconst jsonEnd = responseText.lastIndexOf(']') + 1;\n\nif (jsonStart !== -1 && jsonEnd !== -1) {\n    responseText = responseText.substring(jsonStart, jsonEnd);\n}\n\n// 4. Parsea el JSON de forma segura\nconst products = JSON.parse(responseText);\n\n// 5. Retorna los ítems para n8n\nreturn products.map(p => ({ json: p }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        192
+      ],
+      "id": "e807877b-caba-4108-bfbf-583b05099c6d",
+      "name": "Desagrupar Lote"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.1-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.1-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "==Eres un asistente analista de catálogo e-commerce para Oh Yeah Party. Tu objetivo es clasificar semánticamente la siguiente lista de productos.\n\nLista de productos:\n{{ JSON.stringify($json.lista) }}\n\nDebes retornar OBLIGATORIAMENTE y ÚNICAMENTE un array JSON que contenga un objeto por cada producto en el mismo orden, con la siguiente estructura exacta (no añadas bloques de código markdown ni explicaciones, solo el JSON plano):\n[\n  {\n    \"external_id\": \"ID de Shopify (external_id) correspondiente\",\n    \"tematica\": \"Categoría temática del evento. Debes clasificar el producto OBLIGATORIAMENTE en una de las siguientes opciones (si no encaja, usa 'Otros'): [ Disney, Cumpleaños, Bodas, Comuniones y Bautizos, Navidad, Halloween, Otros ]\",\n    \"tipo_producto\": \"Tipo de artículo físico. Clasifícalo estrictamente en una de las siguientes opciones: [ Globos y Helio, Vajilla y Menaje, Guirnaldas y Banderines, Disfraces y Accesorios, Velas y Bengalas, Confeti y Serpentinas, Decoración de Mesa, Otros ]\",\n    \"rango_edad\": \"Segmento de edad objetivo (ej: Bebés, Niños, Adultos, Universal)\",\n    \"seo_title_opt\": \"Título optimizado para SEO\"\n  }\n]\n\n]\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        192
+      ],
+      "id": "4d339034-d457-4f08-bbc2-28000c699f48",
+      "name": "Clasificar productos por IA",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "NM9BGsdCE9bGgxma",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        272
+      ],
+      "id": "5b651d51-5c27-46f8-8aa8-c3050b518259",
+      "name": "Pausa seguridad",
+      "webhookId": "1401fac9-2ea5-4045-991d-53c66b0095e0"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agrupa la lista de 20 o 25 productos en un único objeto contenedor\nconst products = $input.all().map(item => ({\n    external_id: item.json.external_id,\n    title: item.json.title,\n    description: item.json.description\n}));\n\nreturn { json: { lista: products } };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        192
+      ],
+      "id": "e546ca84-df16-4118-8dbf-b5db0b81c29d",
+      "name": "Agrupar Lote"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Web Scrapping y guardar datos en DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Web Scrapping y guardar datos en DB": {
+      "main": [
+        [
+          {
+            "node": "Limpieza de datos Catálogo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query SQL Nuevos productos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agrupar Lote",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        []
+      ]
+    },
+    "Actualizar o Insertar nuevos productos": {
+      "main": [
+        [
+          {
+            "node": "Pausa seguridad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpieza de datos Catálogo": {
+      "main": [
+        [
+          {
+            "node": "Query SQL Nuevos productos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Desagrupar Lote": {
+      "main": [
+        [
+          {
+            "node": "Actualizar o Insertar nuevos productos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificar productos por IA": {
+      "main": [
+        [
+          {
+            "node": "Desagrupar Lote",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pausa seguridad": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agrupar Lote": {
+      "main": [
+        [
+          {
+            "node": "Clasificar productos por IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7b33efde-200a-4110-8cd7-6a3d3a7b729f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2f28b7d019a62def640d142b38110490f29fa56d0dc34d100d804eeafd4a560d"
+  },
+  "id": "GaAyaWdfU79z7QMp",
+  "tags": []
+}

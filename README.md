@@ -55,7 +55,7 @@ docker-compose up --build -d
    * **Postgres**: Conexión al Host `catalog_intelligence_postgres` por el puerto `5432` con usuario `OH_YEAH_USER` y contraseña `OH_YEAH_PASSWORD`.
    * **Send Email (SMTP)**: Configura las credenciales SMTP de tu correo si deseas recibir alertas de fallos de ejecución.
 
-### 3. Explotación de Datos (Fase de Modelado en Progreso)
+### 3. Explotación y Modelo Analítico en Power BI (Fase de Diseño en Progreso)
 Puedes conectar tu herramienta BI directamente a la base de datos local usando las siguientes credenciales para iniciar la construcción de reportes:
 * **Motor**: PostgreSQL
 * **Host**: `localhost` (o la IP del servidor)
@@ -64,7 +64,33 @@ Puedes conectar tu herramienta BI directamente a la base de datos local usando l
 * **Usuario**: `OH_YEAH_USER`
 * **Contraseña**: `OH_YEAH_PASSWORD`
 
-Vistas SQL preparadas para el consumo BI:
-* `vista_analisis_catalogo`
-* `vista_alertas_roturas_stock`
-* `vista_optimizaciones_seo_ofertas`
+El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH_DASHBOARD.pbix`** que explota las siguientes vistas de base de datos:
+* `vista_analisis_catalogo`: Consolida los atributos del producto enriquecidos con temática, rango de edad y tipo de producto generado por IA.
+* `vista_alertas_roturas_stock`: Monitorea productos fuera de stock.
+* `vista_optimizaciones_seo_ofertas`: Diseñada para optimizar las conversiones de búsqueda y las sugerencias de títulos optimizados generados por Gemini.
+
+#### Páginas Construidas en el Dashboard:
+1. **Surtido y Mix de Producto**:
+   * Análisis de volumen del catálogo con tarjetas dinámicas de total productos y precio promedio.
+   * Gráficos interactivos de distribución de productos por Temática del Evento y Rango de Edad.
+2. **Precios y Ofertas**:
+   * KPIs dinámicos calculados por DAX para el control comercial: *Cantidad de Rebajados*, *Descuento Promedio* y *Descuento Máximo*.
+   * Gráfico de barras interactivo de descuento medio por temática del evento que filtra la tabla central de productos en oferta.
+3. **Stock**:
+   * KPI de Tasa General de Rotura de Stock y Cantidad de Productos Agotados.
+   * Detalle gráfico por temática para detectar huecos de catálogo críticos.
+4. **SEO**:
+   * Tabla interactiva de sugerencias de optimización semántica generadas por Gemini.
+   * **Buscador de Productos integrado**: Filtro directo y rápido de términos clave de producto mediante segmentación integrada por texto.
+   * Ajuste de espaciado interno y celdas para el correcto centrado vertical de imágenes y textos.
+
+#### Medidas DAX Principales Implementadas:
+* **`Descuento Máximo`**: `MAX('public vista_analisis_catalogo'[discount_percentage]) / 100` *(Formateado como %)*
+* **`Descuento Promedio`**: `AVERAGE('public vista_analisis_catalogo'[discount_percentage]) / 100` *(Formateado como %)*
+* **`Descuento Activo %`**: `DIVIDE(AVERAGE('public vista_analisis_catalogo'[discount_percentage]), 100)`
+
+---
+
+## 🎨 Siguiente Hito: Diseño Estético Premium
+El pipeline de datos y la interactividad del reporte de Power BI están completamente solucionados y validados. La siguiente sesión se centrará en el pulido final de la experiencia de usuario (layouts de fondo, paleta de colores corporativa y tipografías en Power BI).
+
