@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS productos (
     description TEXT,
     created_at TIMESTAMP,                        -- Fecha creación en Shopify
     published_at TIMESTAMP,                      -- Fecha publicación en Shopify
+    updated_at TIMESTAMP,                        -- Fecha última modificación en Shopify
     last_scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

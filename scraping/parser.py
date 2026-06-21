@@ -57,7 +57,8 @@ def parse_product_json(product: Dict[str, Any]) -> Dict[str, Any]:
         "image_url": image_url,
         "description": description,
         "created_at": product.get("created_at"),
-        "published_at": product.get("published_at")
+        "published_at": product.get("published_at"),
+        "updated_at": product.get("updated_at")
     }
 
 def parse_products_batch(products_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

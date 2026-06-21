@@ -35,3 +35,7 @@ postgres_data/
 # Docker logs
 *.log
 docker-compose.override.yml
+
+# Carpeta de scripts temporales y pruebas de desarrollo
+scratch/
+

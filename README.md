@@ -1,8 +1,8 @@
-# E-Commerce Product Intelligence & Trend Detection Pipeline 🚀 (En Progreso)
+# E-Commerce Product Intelligence & Trend Detection Pipeline 🚀
 
-Este proyecto implementa un pipeline automatizado de extracción de datos de catálogo (Web Scraping), almacenamiento estructurado (PostgreSQL) y enriquecimiento semántico mediante Inteligencia Artificial (Google Gemini) orquestado con n8n.
+Este proyecto implementa un pipeline automatizado de extracción de datos de catálogo (Web Scraping), almacenamiento estructurado (PostgreSQL) y enriquecimiento semántico mediante Inteligencia Artificial (Google Gemini) orquestado con n8n, culminando en un Dashboard analítico interactivo en Power BI.
 
-Actualmente, el backend y el pipeline de automatización de datos se encuentran completamente operativos, y el proyecto está **en fase de desarrollo activo**, siendo la siguiente etapa la construcción del dashboard visual final.
+El proyecto se encuentra **completamente operativo y finalizado**, sirviendo como un portfolio de nivel profesional para la toma de decisiones estratégicas de negocio y optimización SEO en el sector e-commerce.
 
 El scraper está optimizado específicamente para extraer el catálogo completo del e-commerce **Oh Yeah Party** a través del endpoint interno estructurado de Shopify, garantizando estabilidad y rendimiento.
 
@@ -15,14 +15,14 @@ El sistema está completamente contenedorizado con **Docker** y consta de tres c
 1. **Extracción y Carga (Python API - Flask)**:
    * Expone un endpoint `/trigger-scraping` para iniciar la extracción.
    * Consume de manera eficiente la API interna de colecciones de Shopify de Oh Yeah Party (`/products.json?limit=250&page=X`).
-   * Almacena y sincroniza de forma idempotente (Insert or Update) los productos directamente en PostgreSQL.
+   * Almacena y sincroniza de forma idempotente (Insert or Update) los productos directamente en PostgreSQL, registrando las actualizaciones de stock, precios y metadatos (`updated_at`).
 2. **Orquestación y Categorización Semántica (n8n & Google Gemini)**:
    * Un flujo orquestado recupera productos sin procesar en lotes controlados.
-   * Utiliza el LLM **Gemini 2.5 Flash** para clasificar el producto en base a su título y descripción (extracción de Temática del Evento, Rango de Edad objetivo y optimización de título para SEO).
+   * Utiliza el LLM **Gemini 3.1 Flash-Lite** para clasificar el producto en base a su título y descripción (extracción de Temática del Evento, Rango de Edad objetivo y optimización de título para SEO).
    * Almacena los insights resultantes en la tabla `insights_ia`.
    * Incluye un sistema de control de errores proactivo que notifica fallos de ejecución directamente por Email (SMTP).
 3. **Capa Analítica (PostgreSQL Vistas)**:
-   * Vistas SQL optimizadas preparadas en la base de datos para cruzar el catálogo con la categorización semántica, listas para conectar en la siguiente fase con Power BI o Tableau.
+   * Vistas SQL optimizadas preparadas en la base de datos para cruzar el catálogo con la categorización semántica, preparadas para alimentar de forma directa el Dashboard.
 
 ---
 
@@ -30,11 +30,13 @@ El sistema está completamente contenedorizado con **Docker** y consta de tres c
 
 * `config/settings.py`: Parámetros globales de scraping, rate limits y cabeceras HTTP.
 * `database/schema.sql`: Estructura DDL de las tablas, claves y sus índices analíticos.
+* `database/clean_data.py`: Pipeline de limpieza y validación retroactiva de datos de catálogo.
 * `dashboard/query_views.sql`: Vistas SQL analíticas (Análisis de catálogo, alertas de rotura de stock y optimizaciones SEO).
+* `dashboard/OH_YEAH_DASHBOARD.pbix`: Archivo fuente del Dashboard interactivo en Power BI Desktop.
 * `scraping/scraper.py`: Orquestador del scraper con lógica de paginación e intervalos seguros de rate-limit.
 * `scraping/parser.py`: Limpieza de datos (descuentos, cálculo de stock y formateo).
 * `scraping/app.py`: API Flask para el disparo HTTP desde n8n.
-* `OH_YEAH_WORKFLOW.json`: Flujo de n8n listo para importar.
+* `n8n/OH_YEAH_WORKFLOW.json`: Flujo de n8n listo para importar.
 * `docker-compose.yml`: Definición del stack contenedorizado (Postgres 15 y API Python).
 
 ---
@@ -55,24 +57,20 @@ docker-compose up --build -d
    * **Postgres**: Conexión al Host `catalog_intelligence_postgres` por el puerto `5432` con usuario `OH_YEAH_USER` y contraseña `OH_YEAH_PASSWORD`.
    * **Send Email (SMTP)**: Configura las credenciales SMTP de tu correo si deseas recibir alertas de fallos de ejecución.
 
-### 3. Explotación y Modelo Analítico en Power BI (Fase de Diseño en Progreso)
-Puedes conectar tu herramienta BI directamente a la base de datos local usando las siguientes credenciales para iniciar la construcción de reportes:
-* **Motor**: PostgreSQL
-* **Host**: `localhost` (o la IP del servidor)
-* **Puerto**: `5434`
-* **Base de Datos**: `OH_YEAH_DB`
-* **Usuario**: `OH_YEAH_USER`
-* **Contraseña**: `OH_YEAH_PASSWORD`
+---
 
-El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH_DASHBOARD.pbix`** que explota las siguientes vistas de base de datos:
-* `vista_analisis_catalogo`: Consolida los atributos del producto enriquecidos con temática, rango de edad y tipo de producto generado por IA.
+## 📊 Explotación y Modelo Analítico en Power BI
+
+El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH_DASHBOARD.pbix`** que explota las siguientes vistas de la base de datos:
+* `vista_analisis_catalogo`: Consolida los atributos del producto enriquecidos con temática, rango de edad, tipo de producto generado por la IA de Gemini, y el metadato `updated_at` que registra la fecha de última modificación del producto en la tienda de Shopify.
 * `vista_alertas_roturas_stock`: Monitorea productos fuera de stock.
 * `vista_optimizaciones_seo_ofertas`: Diseñada para optimizar las conversiones de búsqueda y las sugerencias de títulos optimizados generados por Gemini.
 
-#### Páginas Construidas en el Dashboard:
+### Páginas del Dashboard y Storytelling Visual:
 1. **Surtido y Mix de Producto**:
    * Análisis de volumen del catálogo con tarjetas dinámicas de total productos y precio promedio.
    * Gráficos interactivos de distribución de productos por Temática del Evento y Rango de Edad.
+   * **KPI de Frescura de Catálogo (Última Sincronización)**: Mapeo dinámico mediante DAX del último cambio registrado en Shopify.
 2. **Precios y Ofertas**:
    * KPIs dinámicos calculados por DAX para el control comercial: *Cantidad de Rebajados*, *Descuento Promedio* y *Descuento Máximo*.
    * Gráfico de barras interactivo de descuento medio por temática del evento que filtra la tabla central de productos en oferta.
@@ -82,15 +80,13 @@ El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH
 4. **SEO**:
    * Tabla interactiva de sugerencias de optimización semántica generadas por Gemini.
    * **Buscador de Productos integrado**: Filtro directo y rápido de términos clave de producto mediante segmentación integrada por texto.
-   * Ajuste de espaciado interno y celdas para el correcto centrado vertical de imágenes y textos.
-
-#### Medidas DAX Principales Implementadas:
-* **`Descuento Máximo`**: `MAX('public vista_analisis_catalogo'[discount_percentage]) / 100` *(Formateado como %)*
-* **`Descuento Promedio`**: `AVERAGE('public vista_analisis_catalogo'[discount_percentage]) / 100` *(Formateado como %)*
-* **`Descuento Activo %`**: `DIVIDE(AVERAGE('public vista_analisis_catalogo'[discount_percentage]), 100)`
 
 ---
 
-## 🎨 Siguiente Hito: Diseño Estético Premium
-El pipeline de datos y la interactividad del reporte de Power BI están completamente solucionados y validados. La siguiente sesión se centrará en el pulido final de la experiencia de usuario (layouts de fondo, paleta de colores corporativa y tipografías en Power BI).
+## 📥 Cómo abrir el Dashboard en local (Para Reclutadores / Evaluadores)
 
+El archivo del informe de Power BI está diseñado de forma no destructiva y es 100% interactivo. 
+
+1. Asegúrate de tener instalado **Power BI Desktop** (aplicación gratuita disponible en la Microsoft Store).
+2. Descarga y abre el archivo [dashboard/OH_YEAH_DASHBOARD.pbix](file:///c:/Users/manue/OneDrive/Escritorio/Proyectos/Web%20Scrapping/dashboard/OH_YEAH_DASHBOARD.pbix).
+3. **Uso de Caché de Datos:** El archivo se comparte con una **caché de datos ya precargada**. Esto significa que podrás hacer clic en todos los gráficos, filtrar por temáticas, buscar productos e interactuar al 100% con el informe de forma inmediata sin necesidad de levantar los contenedores de Docker o conectarte a la base de datos de origen.

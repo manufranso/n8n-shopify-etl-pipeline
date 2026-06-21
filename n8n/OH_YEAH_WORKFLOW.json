@@ -313,7 +313,7 @@
       "typeVersion": 1.1,
       "position": [
         1440,
-        272
+        264
       ],
       "id": "5b651d51-5c27-46f8-8aa8-c3050b518259",
       "name": "Pausa seguridad",
@@ -474,7 +474,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "7b33efde-200a-4110-8cd7-6a3d3a7b729f",
+  "versionId": "d6f5a3dd-bdb6-4f59-ad9e-7b72e0ac28c9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2f28b7d019a62def640d142b38110490f29fa56d0dc34d100d804eeafd4a560d"

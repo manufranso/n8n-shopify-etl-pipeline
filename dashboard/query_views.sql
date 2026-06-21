@@ -14,6 +14,7 @@ SELECT
     p.image_url,
     p.created_at,
     p.published_at,
+    p.updated_at,
     p.last_scraped_at,
     COALESCE(i.tematica, 'Sin Categorizar') AS tematica,
     COALESCE(i.rango_edad, 'Sin Clasificar') AS rango_edad,

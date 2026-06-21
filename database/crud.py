@@ -14,11 +14,11 @@ def upsert_productos(productos: List[Dict[str, Any]]) -> None:
         INSERT INTO productos (
             external_id, title, handle, current_price, original_price,
             discount_percentage, stock_status, image_url, description,
-            created_at, published_at, last_scraped_at
+            created_at, published_at, updated_at, last_scraped_at
         ) VALUES (
             %(external_id)s, %(title)s, %(handle)s, %(current_price)s, %(original_price)s,
             %(discount_percentage)s, %(stock_status)s, %(image_url)s, %(description)s,
-            %(created_at)s, %(published_at)s, CURRENT_TIMESTAMP
+            %(created_at)s, %(published_at)s, %(updated_at)s, CURRENT_TIMESTAMP
         )
         ON CONFLICT (external_id) DO UPDATE SET
             title = EXCLUDED.title,
@@ -30,6 +30,7 @@ def upsert_productos(productos: List[Dict[str, Any]]) -> None:
             image_url = EXCLUDED.image_url,
             description = EXCLUDED.description,
             published_at = EXCLUDED.published_at,
+            updated_at = EXCLUDED.updated_at,
             last_scraped_at = CURRENT_TIMESTAMP;
     """
 
