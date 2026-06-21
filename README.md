@@ -83,7 +83,7 @@ El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH
 
 ---
 
-## 📥 Cómo abrir el Dashboard en local (Para Reclutadores / Evaluadores)
+## 📥 Cómo abrir el Dashboard en local 
 
 El archivo del informe de Power BI está diseñado de forma no destructiva y es 100% interactivo. 
 
