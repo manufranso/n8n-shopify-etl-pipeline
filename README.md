@@ -88,5 +88,5 @@ El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH
 El archivo del informe de Power BI está diseñado de forma no destructiva y es 100% interactivo. 
 
 1. Asegúrate de tener instalado **Power BI Desktop** (aplicación gratuita disponible en la Microsoft Store).
-2. Descarga y abre el archivo [dashboard/OH_YEAH_DASHBOARD.pbix](file:///c:/Users/manue/OneDrive/Escritorio/Proyectos/Web%20Scrapping/dashboard/OH_YEAH_DASHBOARD.pbix).
+2. Descarga y abre el archivo [dashboard/OH_YEAH_DASHBOARD.pbix](dashboard/OH_YEAH_DASHBOARD.pbix).
 3. **Uso de Caché de Datos:** El archivo se comparte con una **caché de datos ya precargada**. Esto significa que podrás hacer clic en todos los gráficos, filtrar por temáticas, buscar productos e interactuar al 100% con el informe de forma inmediata sin necesidad de levantar los contenedores de Docker o conectarte a la base de datos de origen.
