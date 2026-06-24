@@ -39,3 +39,6 @@ docker-compose.override.yml
 # Carpeta de scripts temporales y pruebas de desarrollo
 scratch/
 
+# Informes comerciales privados
+Informe.md
+

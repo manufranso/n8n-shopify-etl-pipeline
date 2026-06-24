@@ -72,7 +72,10 @@ El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH
    * Gráficos interactivos de distribución de productos por Temática del Evento y Rango de Edad.
    * **KPI de Frescura de Catálogo (Última Sincronización)**: Mapeo dinámico mediante DAX del último cambio registrado en Shopify.
 2. **Precios y Ofertas**:
-   * KPIs dinámicos calculados por DAX para el control comercial: *Cantidad de Rebajados*, *Descuento Promedio* y *Descuento Máximo*.
+   * **KPIs dinámicos optimizados por DAX** para el control comercial:
+     * *Cantidad de Rebajados*.
+     * *Descuento Activo %*: Medida DAX corregida a nivel de registro (`discount_percentage > 0`) para calcular el descuento promedio real sobre los artículos ofertados de forma precisa, evitando la desviación a la baja de los productos sin descuento.
+     * *Descuento Máximo*.
    * Gráfico de barras interactivo de descuento medio por temática del evento que filtra la tabla central de productos en oferta.
 3. **Stock**:
    * KPI de Tasa General de Rotura de Stock y Cantidad de Productos Agotados.
@@ -80,6 +83,19 @@ El repositorio incluye un modelo analítico estructurado en **`dashboard/OH_YEAH
 4. **SEO**:
    * Tabla interactiva de sugerencias de optimización semántica generadas por Gemini.
    * **Buscador de Productos integrado**: Filtro directo y rápido de términos clave de producto mediante segmentación integrada por texto.
+
+---
+
+## 🚀 Roadmap de Escalabilidad y Mejoras Futuras
+
+Para llevar este pipeline analítico a un entorno productivo de nivel corporativo, se han identificado las siguientes líneas de desarrollo futuro:
+
+1. **Análisis Predictivo de Rotura de Stock (Machine Learning):**
+   * Implementación de modelos de series temporales en Python para estimar dinámicamente la fecha exacta en la que un SKU llegará a cero stock, aprendiendo de los patrones de estacionalidad históricos y de las campañas comerciales.
+2. **Normalización Granular del Catálogo:**
+   * Escalabilidad de la ingesta de datos para estructurar la base de datos a nivel de variantes físicas (desglose por talla, color o unidades del paquete) en lugar de consolidar únicamente por producto base, aumentando el detalle del mix de producto de cara al inventario.
+3. **Refresco Automatizado y Alertas Push:**
+   * Configuración de la actualización programada (Scheduled Refresh) de datos en Power BI y desarrollo de alertas activas mediante webhooks de n8n para notificar en tiempo real al equipo comercial ante roturas críticas de stock.
 
 ---
 
